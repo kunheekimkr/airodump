@@ -1,9 +1,9 @@
+LDLIBS=-lpcap
+
 all: airodump
 
-airodump: main.o
-	g++ -o airodump main.o -lpcap
-
-main.o:	main.cpp
+airodump: main.o mac.o
+	$(LINK.cc) $^ $(LDLIBS) -o $@
 
 clean:
-	rm -f *.o airodump
+	rm -f airodump *.o
