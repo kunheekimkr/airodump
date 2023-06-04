@@ -1,5 +1,6 @@
 #include "main.h"
 #include <vector>
+#include <cstdlib>
 
 vector<info> v;
 
@@ -11,6 +12,8 @@ void usage(void)
 
 void printInfo()
 {
+    system("clear");
+    printf(" BSSID              PWR  Beacons    #Data, #/s  CH   MB   ENC CIPHER  AUTH ESSID\n");
     for (info temp : v)
     {
         printf(" ");
@@ -21,7 +24,6 @@ void printInfo()
         printf("%s", temp.essid);
         printf("\n");
     }
-    printf("=======================================\n");
 }
 
 void airodump(const u_char *packet, int length)
@@ -92,7 +94,6 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    printf(" BSSID              PWR  Beacons    #Data, #/s  CH   MB   ENC CIPHER  AUTH ESSID\n");
     while (1)
     {
         struct pcap_pkthdr *header;
