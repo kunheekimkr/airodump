@@ -13,14 +13,15 @@ void usage(void)
 void printInfo()
 {
     system("clear");
-    printf(" BSSID              PWR  Beacons    #Data, #/s  CH   MB   ENC CIPHER  AUTH ESSID\n");
+    printf(" BSSID                   Beacons                CH        ENC              ESSID\n");
     for (auto temp : m)
     {
         printf(" ");
         printf("%s", string(temp.first).c_str());
         printf("           %03d                ", temp.second.beacons);
-        printf("%d", temp.second.channel);
-        printf("                        ");
+        printf("%02d        ", temp.second.channel);
+        printf("%s", temp.second.ENC);
+        printf("         ");
         printf("%s", temp.second.essid);
         printf("\n");
     }
@@ -44,8 +45,8 @@ void airodump(const u_char *packet, int length)
         info newInfo;
         newInfo.bssid = bcnFrame->bssid;
         newInfo.beacons = 1;
-        newInfo.data = 0;
         newInfo.channel = 0;
+        memcpy(newInfo.ENC, "UNKNOWN\0", 9);
         int idx = rtHdr->it_len + sizeof(beaconFrame) + FIXED_PARAM_SIZE;
         while (idx < length)
         {
@@ -61,6 +62,10 @@ void airodump(const u_char *packet, int length)
             else if (tagno == 3)
             {
                 newInfo.channel = packet[idx];
+            }
+            else if (tagno == 48) // RSN IE tag number
+            {
+                memcpy(newInfo.ENC, "WPA2    \0", 9);
             }
             idx += taglen;
         }
