@@ -41,26 +41,6 @@ void airodump(const u_char *packet, int length)
         {
             exists = true;
             v[i].beacons++;
-            int idx = rtHdr->it_len + sizeof(beaconFrame) + FIXED_PARAM_SIZE;
-            while (idx < length)
-            {
-                int tagno = packet[idx++];
-                int taglen = packet[idx++];
-                if (idx + taglen >= length)
-                    break;
-
-                // Maybe Useless..?
-                // Update just in case for updates
-                if (tagno == 0)
-                {
-                    memcpy(v[i].essid, packet + idx, taglen);
-                }
-                else if (tagno == 3)
-                {
-                    v[i].channel = packet[idx];
-                }
-                idx += taglen;
-            }
         }
         break;
     }
