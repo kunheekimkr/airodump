@@ -41,8 +41,8 @@ void airodump(const u_char *packet, int length)
         {
             exists = true;
             v[i].beacons++;
+            break;
         }
-        break;
     }
 
     if (!exists)
