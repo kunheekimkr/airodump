@@ -31,6 +31,6 @@ typedef struct info
     Mac bssid;
     int beacons;
     int data;
-    char essid[256];
+    char essid[128];
     int channel;
 } info;
