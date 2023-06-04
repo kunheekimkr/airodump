@@ -2,6 +2,8 @@
 #include <netinet/in.h>
 #include <pcap.h>
 #include "mac.h"
+
+#define FIXED_PARAM_SIZE 12
 using namespace std;
 
 // Source: https://www.radiotap.org/
@@ -23,3 +25,12 @@ typedef struct ieee80211_beacon_frame
     Mac bssid;
     u_int16_t seq;
 } __attribute__((__packed__)) beaconFrame;
+
+typedef struct info
+{
+    Mac bssid;
+    int beacons;
+    int data;
+    char essid[256];
+    int channel;
+} info;
