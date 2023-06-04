@@ -16,18 +16,12 @@ void printInfo()
         printf(" ");
         printf("%s", string(temp.bssid).c_str());
         printf("           %03d                ", temp.beacons);
-        if (temp.channel)
-        {
-            printf("%2d", temp.channel);
-        }
-        else
-        {
-            printf("  ");
-        }
+        printf("%d", temp.channel);
         printf("                        ");
         printf("%s", temp.essid);
         printf("\n");
     }
+    printf("=======================================\n");
 }
 
 void airodump(const u_char *packet, int length)
@@ -45,7 +39,7 @@ void airodump(const u_char *packet, int length)
     {
         if (v[i].bssid == bcnFrame->bssid)
         {
-            exists == true;
+            exists = true;
             v[i].beacons++;
             int idx = rtHdr->it_len + sizeof(beaconFrame) + FIXED_PARAM_SIZE;
             while (idx < length)
@@ -54,6 +48,9 @@ void airodump(const u_char *packet, int length)
                 int taglen = packet[idx++];
                 if (idx + taglen >= length)
                     break;
+
+                // Maybe Useless..?
+                // Update just in case for updates
                 if (tagno == 0)
                 {
                     memcpy(v[i].essid, packet + idx, taglen);
@@ -65,6 +62,7 @@ void airodump(const u_char *packet, int length)
                 idx += taglen;
             }
         }
+        break;
     }
 
     if (!exists)
