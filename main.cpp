@@ -1,8 +1,8 @@
 #include "main.h"
-#include <vector>
+#include <map>
 #include <cstdlib>
 
-vector<info> v;
+map<Mac, info> m;
 
 void usage(void)
 {
@@ -14,14 +14,14 @@ void printInfo()
 {
     system("clear");
     printf(" BSSID              PWR  Beacons    #Data, #/s  CH   MB   ENC CIPHER  AUTH ESSID\n");
-    for (info temp : v)
+    for (auto temp : m)
     {
         printf(" ");
-        printf("%s", string(temp.bssid).c_str());
-        printf("           %03d                ", temp.beacons);
-        printf("%d", temp.channel);
+        printf("%s", string(temp.first).c_str());
+        printf("           %03d                ", temp.second.beacons);
+        printf("%d", temp.second.channel);
         printf("                        ");
-        printf("%s", temp.essid);
+        printf("%s", temp.second.essid);
         printf("\n");
     }
 }
@@ -35,19 +35,11 @@ void airodump(const u_char *packet, int length)
     if (bcnFrame->type != 0x80)
         return;
 
-    bool exists = false;
-
-    for (int i = 0; i < v.size(); i++)
+    if (m.find(bcnFrame->bssid) != m.end())
     {
-        if (v[i].bssid == bcnFrame->bssid)
-        {
-            exists = true;
-            v[i].beacons++;
-            break;
-        }
+        m[bcnFrame->bssid].beacons++;
     }
-
-    if (!exists)
+    else
     {
         info newInfo;
         newInfo.bssid = bcnFrame->bssid;
@@ -64,6 +56,7 @@ void airodump(const u_char *packet, int length)
             if (tagno == 0)
             {
                 memcpy(newInfo.essid, packet + idx, taglen);
+                newInfo.essid[taglen] = '\0';
             }
             else if (tagno == 3)
             {
@@ -71,9 +64,8 @@ void airodump(const u_char *packet, int length)
             }
             idx += taglen;
         }
-        v.push_back(newInfo);
+        m[bcnFrame->bssid] = newInfo;
     }
-
     printInfo();
 }
 
