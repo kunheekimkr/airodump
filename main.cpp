@@ -1,6 +1,4 @@
 #include "main.h"
-#include <map>
-#include <cstdlib>
 
 map<Mac, info> m;
 
